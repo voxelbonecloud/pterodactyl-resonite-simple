@@ -1,0 +1,107 @@
+{
+    "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PANEL",
+    "meta": {
+        "version": "PLCN_v3",
+        "update_url": null
+    },
+    "exported_at": "2026-02-25T01:56:45+00:00",
+    "name": "Simple Resonite Headless",
+    "author": "admins@voxelbone.cloud",
+    "uuid": "c4f1f957-cfaa-4261-a69b-750149cdf506",
+    "description": "A simple Resonite Headless Egg, published by Voxel Bone Cloud",
+    "image": null,
+    "tags": [],
+    "features": [],
+    "docker_images": {
+        "ghcr.io/voxelbonecloud/pterodactyl-resonite-simple:main": "ghcr.io/voxelbonecloud/pterodactyl-resonite-simple:main"
+    },
+    "file_denylist": [],
+    "startup_commands": {
+        "Default": "dotnet Resonite/Headless/Resonite.dll -HeadlessConfig Config/{{CONFIG_FILENAME}} -Logs Logs/"
+    },
+    "config": {
+        "files": "{}",
+        "startup": "{\n    \"done\": \"World running...\"\n}",
+        "logs": "{}",
+        "stop": "shutdown"
+    },
+    "scripts": {
+        "installation": {
+            "script": "#!/bin/bash\r\n\r\n# Resonite Headless install script\r\n# Copyright 2024 Voxel Bone Cloud.\r\n\r\n# Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \u201cSoftware\u201d), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\r\n\r\n#THE SOFTWARE IS PROVIDED \u201cAS IS\u201d, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\r\n\r\n# Create extra directories used by the headless\r\nmkdir -p /mnt/server/Config\r\nmkdir -p /mnt/server/Logs\r\n\r\n# Create basic config\r\necho -e \\\r\n'{\r\n    \"$schema\": \"https://raw.githubusercontent.com/Yellow-Dog-Man/JSONSchemas/main/schemas/HeadlessConfig.schema.json\",\r\n    \"loginCredential\": null,\r\n    \"loginPassword\": null,\r\n    \"startWorlds\": [\r\n    {\r\n      \"isEnabled\": true,\r\n      \"sessionName\": null,\r\n      \"accessLevel\": \"Anyone\",\r\n      \"loadWorldURL\": null,\r\n      \"loadWorldPresetName\": \"Grid\"\r\n    }\r\n  ]\r\n}' > /mnt/server/Config/Config.json\r\n\r\n# Make sure curl is installed\r\napt-get update\r\napt-get install curl -y\r\n\r\n# Download SteamCMD\r\nmkdir -p /mnt/server/steamcmd\r\ncd /mnt/server/steamcmd\r\ncurl -sqL https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz | tar zxvf -\r\n\r\n# Resonite is downloaded in the entrypoint, so we won't download it here.",
+            "container": "debian:trixie-slim",
+            "entrypoint": "bash"
+        }
+    },
+    "variables": [
+        {
+            "name": "Config File Name",
+            "description": "The name of the Resonite Config File",
+            "env_variable": "CONFIG_FILENAME",
+            "default_value": "Config.json",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": [
+                "required",
+                "string",
+                "max:32"
+            ],
+            "sort": null
+        },
+        {
+            "name": "Steam Beta Code",
+            "description": "The Steam Beta Code obtained through sending /headlessCode to the Resonite bot",
+            "env_variable": "BETA_CODE",
+            "default_value": "",
+            "user_viewable": false,
+            "user_editable": false,
+            "rules": [
+                "nullable",
+                "string",
+                "max:64"
+            ],
+            "sort": null
+        },
+        {
+            "name": "Steam Branch",
+            "description": "The Steam branch to download from",
+            "env_variable": "STEAM_BRANCH",
+            "default_value": "headless",
+            "user_viewable": false,
+            "user_editable": false,
+            "rules": [
+                "required",
+                "string",
+                "max:32"
+            ],
+            "sort": null
+        },
+        {
+            "name": "Steam Password",
+            "description": "Your Steam Password",
+            "env_variable": "STEAM_PASSWORD",
+            "default_value": "",
+            "user_viewable": false,
+            "user_editable": false,
+            "rules": [
+                "required",
+                "string",
+                "max:128"
+            ],
+            "sort": null
+        },
+        {
+            "name": "Steam Username",
+            "description": "Your Steam Username",
+            "env_variable": "STEAM_USER",
+            "default_value": "",
+            "user_viewable": false,
+            "user_editable": false,
+            "rules": [
+                "required",
+                "string",
+                "max:128"
+            ],
+            "sort": null
+        }
+    ]
+}
