@@ -39,75 +39,12 @@ if [ ! "${BETA_CODE}" = "" ]; then
 fi
 
 # Handle if we have no Steam branch
-# - we will run into this with people using older eggs
 if [ "${STEAM_BRANCH}" = "" ]; then
 	echo "Manually adding Steam branch!"
 	STEAM_BRANCH="headless"
 fi
 
-INSTALL_DIRECTORY="/home/container/Resonite"
-LEGACY_INSTALL="FALSE"
-
-if [ -f /home/container/Build.version ]; then
-	echo "Legacy install location detected"
-	INSTALL_DIRECTORY="/home/container"
-	LEGACY_INSTALL="TRUE"
-fi
-
-if [ ${LEGACY_INSTALL} = "FALSE" ]; then
-	if [ ! -L /home/container/Headless ]; then
-		echo "Symlink doesn't exist!"
-		mkdir -p /home/container/Resonite/Headless
-		ln -s /home/container/Resonite/Headless /home/container/Headless
-	fi
-fi
-
-./steamcmd/steamcmd.sh +login ${STEAM_USER} ${STEAM_PASSWORD} ${STEAM_AUTH} +@sSteamCmdForcePlatformType windows +force_install_dir ${INSTALL_DIRECTORY} +app_license_request 2519830 +app_update 2519830 -beta ${STEAM_BRANCH} ${STEAMCMD_BETA_PASSWORD} validate +quit
-
-# Modding stuff
-HEADLESS_DIRECTORY="/home/container"
-
-if [ "${ENABLE_MODS}" = "true" ] || [ "${ENABLE_MODS}" = "1" ]; then
-	echo "Mods are enabled."
-
-	mkdir -p ${HEADLESS_DIRECTORY}/Libraries
-
-	mkdir -p ${HEADLESS_DIRECTORY}/rml_mods
-	mkdir -p ${HEADLESS_DIRECTORY}/rml_libs
-	mkdir -p ${HEADLESS_DIRECTORY}/rml_config
-
-	# Download ResoniteModLoader
-	echo "Downloading ResoniteModLoader and 0Harmony"
-
-	# Make sure we don't have older versions of 0Harmony
-	rm ${HEADLESS_DIRECTORY}/rml_libs/0Harmony-Net8.dll
-	rm ${HEADLESS_DIRECTORY}/rml_libs/0Harmony-Net9.dll
-
-	curl -SslL https://github.com/resonite-modding-group/ResoniteModLoader/releases/latest/download/0Harmony.dll -o ${HEADLESS_DIRECTORY}/rml_libs/0Harmony.dll
-	curl -SslL https://github.com/resonite-modding-group/ResoniteModLoader/releases/latest/download/ResoniteModLoader.dll -o ${HEADLESS_DIRECTORY}/Libraries/ResoniteModLoader.dll
-
-	# Install mods
-	if [ "${MOD_PROMETHEUS}" = "1" ]; then
-		echo "Installing HeadlessPrometheusExporter by J4"
-		curl -SslL https://i.j4.lc/resonite/mods/latest/HeadlessPrometheusExporter.dll -o ${HEADLESS_DIRECTORY}/rml_mods/HeadlessPrometheusExporter.dll
-	fi
-
-	if  [ "$MOD_HEADLESSTWEAKS" = "1" ]; then
-		echo "Installing HeadlessTweaks by New_Project_Final_Final_WIP"
-		curl -SslL https://github.com/New-Project-Final-Final-WIP/HeadlessTweaks/releases/latest/download/HeadlessTweaks.dll -o ${HEADLESS_DIRECTORY}/rml_mods/HeadlessTweaks.dll
-	fi
-
-	if [ "$MOD_HEADLESSUSERCULLING" = "1" ]; then
-		echo "Installing HeadlessUserCulling by Raidriar"
-		curl -SslL https://github.com/Raidriar796/HeadlessUserCulling/releases/latest/download/HeadlessUserCulling.dll -o ${HEADLESS_DIRECTORY}/rml_mods/HeadlessUserCulling.dll
-	fi
-
-	if [ "$MOD_STRESSLESSHEADLESS" = "1" ]; then
-		echo "Installing StresslessHeadless by Raidriar"
-		curl -SslL https://github.com/Raidriar796/StresslessHeadless/releases/latest/download/StresslessHeadless.dll -o ${HEADLESS_DIRECTORY}/rml_mods/StresslessHeadless.dll
-	fi
-
-fi
+./steamcmd/steamcmd.sh +login ${STEAM_USER} ${STEAM_PASSWORD} ${STEAM_AUTH} +@sSteamCmdForcePlatformType windows +force_install_dir /home/container/Resonite +app_license_request 2519830 +app_update 2519830 -beta ${STEAM_BRANCH} ${STEAMCMD_BETA_PASSWORD} validate +quit
 
 # Convert all of the "{{VARIABLE}}" parts of the command into the expected shell
 # variable format of "${VARIABLE}" before evaluating the string and automatically
